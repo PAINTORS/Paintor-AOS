@@ -3,25 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/tabGroup"
+        android:id="@+id/tabLocation"
         android:icon="@drawable/ic_location"
         android:title="location"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/tabContact"
+        android:id="@+id/tabList"
         android:icon="@drawable/ic_list"
         android:title="list"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/tabRecent"
+        android:id="@+id/tabSearch"
         android:icon="@drawable/ic_search"
         android:title="Search"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/tabLocation"
+        android:id="@+id/tabPreference"
         android:icon="@drawable/ic_preference"
         android:title="preference" />
 
