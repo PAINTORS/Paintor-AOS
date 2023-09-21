@@ -1,5 +1,6 @@
 package com.jina.paintor.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -31,12 +32,14 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
 
         binding.includeToolbar.toolbarTitle = "PAINTOR"
 
-        // binding.appBarMain.contentMain.bottomNaviView.setOnItemSelectedListener(this)
         binding.bottomNaviView.setOnItemSelectedListener(this)
+        binding.includeToolbar.ivCalendar.setOnClickListener {
+            startActivity(Intent(this, CalendarActivity::class.java))
+        }
 
     }
 
-    // NOTE : tab 눌렀을 때 샥샥 넘어가는 애니메이션 추가?
+    // NOTE : 23/09/21 tab 눌렀을 때 샥샥 넘어가는 애니메이션 추가?
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.tabLocation -> {
