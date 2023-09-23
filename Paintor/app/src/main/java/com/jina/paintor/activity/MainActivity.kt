@@ -11,7 +11,7 @@ import com.jina.paintor.fragment.ListFragment
 import com.jina.paintor.fragment.LocationFragment
 import com.jina.paintor.fragment.PreferenceFragment
 import com.jina.paintor.fragment.SearchFragment
-import com.orhanobut.logger.Logger
+//import com.orhanobut.logger.Logger
 
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 supportFragmentManager.beginTransaction().replace(R.id.flLayout, preferenceFragment)
                     .commitAllowingStateLoss()
             }
-            else -> Logger.d("do nothing")
+//            else -> Logger.d("do nothing")
         }
         return true
     }
