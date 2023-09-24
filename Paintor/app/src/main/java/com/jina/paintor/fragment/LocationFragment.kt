@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.jina.paintor.R
 import com.jina.paintor.databinding.FragmentLocationBinding
+
 //import com.orhanobut.logger.Logger
 
 class LocationFragment() : Fragment(), OnMapReadyCallback {
@@ -26,14 +27,14 @@ class LocationFragment() : Fragment(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.mapView.onCreate(savedInstanceState)
-        binding.mapView.getMapAsync(this)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding.mapView.onCreate(savedInstanceState)
+        binding.mapView.getMapAsync(this)
         return binding.root
     }
 
@@ -46,5 +47,35 @@ class LocationFragment() : Fragment(), OnMapReadyCallback {
         mGoogleMap.apply {
             moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F)) //카메라 이동
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.mapView.onPause()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        binding.mapView.onLowMemory()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView.onDestroy()
     }
 }
