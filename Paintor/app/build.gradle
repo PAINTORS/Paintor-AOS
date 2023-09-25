@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 }
 
 android {
@@ -9,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.jina.paintor"
-        minSdk 26
+        minSdk 19
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -50,5 +52,9 @@ dependencies {
 
     // Log
     implementation 'com.orhanobut:logger:2.2.0'
+
+    // google map
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
 }
