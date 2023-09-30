@@ -67,15 +67,15 @@ class LocationFragment(val mContext: Context) : Fragment(), OnMapReadyCallback {
         mGoogleMap = googleMap
         val location = LatLng(latitude, longitude)
         mGoogleMap.apply {
-            moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15F))
+            moveCamera(CameraUpdateFactory.newLatLngZoom(location, 6F))
             mapType = GoogleMap.MAP_TYPE_NORMAL
         }
     }
 
     private fun moveToMyLocation() {
         if (::mGoogleMap.isInitialized) {
-            val myLocation = LatLng(latitude, longitude)
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15F))
+            val targetLocation = LatLng(latitude, longitude)
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 6F))
         }
     }
 
@@ -87,26 +87,4 @@ class LocationFragment(val mContext: Context) : Fragment(), OnMapReadyCallback {
 
         Logger.t(TAG.LOCATION).d("location :: $latitude, $longitude")
     }
-
-    private fun getCurrentAddress(latitude: Double, longitude: Double): String? {
-        val geocoder = Geocoder(mContext, Locale.getDefault())
-        val addresses: List<Address>?
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 7)
-        } catch (e: IOException) {
-            Logger.t(TAG.LOCATION).e("Geocoder can not be used\n${e.message}")
-            return "Geocoder can not be used"
-        } catch (e: IllegalArgumentException) {
-            Logger.t(TAG.LOCATION).e("Invalid GPS coordinates\n${e.message}")
-            return "Invalid GPS coordinates"
-        }
-        if (addresses.isNullOrEmpty()) {
-            Logger.t(TAG.LOCATION).e("Not found address")
-            return "Not found address"
-        }
-
-        val address = addresses[0]
-        return "${address.getAddressLine(0).toString()}\n"
-    }
-
 }
