@@ -8,74 +8,47 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.jina.paintor.R
 import com.jina.paintor.databinding.FragmentLocationBinding
 
-//import com.orhanobut.logger.Logger
+import com.orhanobut.logger.Logger
+import org.json.JSONException
+import java.io.IOException
+import java.io.InputStream
 
-class LocationFragment() : Fragment(), OnMapReadyCallback {
+class LocationFragment(val mContext: Context) : Fragment(), OnMapReadyCallback {
 
-    private val binding: FragmentLocationBinding by lazy {
-        FragmentLocationBinding.inflate(layoutInflater)
-    }
-
+    private lateinit var binding: FragmentLocationBinding
     private lateinit var mGoogleMap: GoogleMap
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding.mapView.onCreate(savedInstanceState)
-        binding.mapView.getMapAsync(this)
-        return binding.root
+        binding = FragmentLocationBinding.inflate(inflater, container, false)
+        val view = binding.root
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+        return view
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val seoul = LatLng(37.554891, 126.970814)
-
         mGoogleMap = googleMap
-        mGoogleMap.mapType = GoogleMap.MAP_TYPE_NORMAL // default 노말 생략 가능
-
+        val option = GoogleMapOptions().mapId("3de7cfc68cf7b3e9")
+        val mapFragment = SupportMapFragment.newInstance(option)
+        childFragmentManager.beginTransaction().replace(R.id.mapView, mapFragment).commit()
+        val location = LatLng(37.554891, 126.970814)
         mGoogleMap.apply {
-            moveCamera(CameraUpdateFactory.newLatLngZoom(seoul, 15F)) //카메라 이동
+            moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15F))
+            mapType = GoogleMap.MAP_TYPE_NORMAL
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        binding.mapView.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        binding.mapView.onStop()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.mapView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.mapView.onPause()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        binding.mapView.onLowMemory()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.mapView.onDestroy()
     }
 }

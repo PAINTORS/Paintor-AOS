@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private val locationFragment = LocationFragment()
+    private val locationFragment = LocationFragment(this)
     private val listFragment = ListFragment()
     private val searchFragment = SearchFragment()
     private val preferenceFragment = PreferenceFragment()
