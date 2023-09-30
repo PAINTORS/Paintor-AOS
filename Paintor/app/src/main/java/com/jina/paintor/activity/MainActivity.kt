@@ -1,9 +1,9 @@
 package com.jina.paintor.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.navigation.NavigationBarView
 import com.jina.paintor.R
 import com.jina.paintor.databinding.ActivityMainBinding
@@ -11,14 +11,15 @@ import com.jina.paintor.fragment.ListFragment
 import com.jina.paintor.fragment.LocationFragment
 import com.jina.paintor.fragment.PreferenceFragment
 import com.jina.paintor.fragment.SearchFragment
-//import com.orhanobut.logger.Logger
+import com.orhanobut.logger.Logger
+
 
 class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListener {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private val locationFragment = LocationFragment()
+    private val locationFragment = LocationFragment(this)
     private val listFragment = ListFragment()
     private val searchFragment = SearchFragment()
     private val preferenceFragment = PreferenceFragment()
@@ -46,20 +47,27 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
                 supportFragmentManager.beginTransaction().replace(R.id.flLayout, locationFragment)
                     .commitAllowingStateLoss()
             }
+
             R.id.tabList -> {
                 supportFragmentManager.beginTransaction().replace(R.id.flLayout, listFragment)
                     .commitAllowingStateLoss()
             }
+
             R.id.tabSearch -> {
                 supportFragmentManager.beginTransaction().replace(R.id.flLayout, searchFragment)
                     .commitAllowingStateLoss()
             }
+
             R.id.tabPreference -> {
                 supportFragmentManager.beginTransaction().replace(R.id.flLayout, preferenceFragment)
                     .commitAllowingStateLoss()
             }
-//            else -> Logger.d("do nothing")
+
+            else -> Logger.d("do nothing")
         }
         return true
     }
+
+
+
 }
