@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMapOptions
@@ -17,18 +18,25 @@ import com.google.maps.android.data.kml.KmlContainer
 import com.google.maps.android.data.kml.KmlLayer
 import com.google.maps.android.data.kml.KmlPolygon
 import com.jina.paintor.R
+import com.jina.paintor.database.MainViewModel
+import com.jina.paintor.database.TripSchedule
 import com.jina.paintor.databinding.FragmentLocationBinding
 import com.jina.paintor.location.GpsTracker
 import com.jina.paintor.utils.TAG
 import com.orhanobut.logger.Logger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
+import java.util.Date
 
 class LocationFragment(val mContext: Context) : Fragment(), OnMapReadyCallback {
 
     private val binding: FragmentLocationBinding by lazy {
         FragmentLocationBinding.inflate(layoutInflater)
     }
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var mGoogleMap: GoogleMap
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
@@ -129,6 +137,19 @@ class LocationFragment(val mContext: Context) : Fragment(), OnMapReadyCallback {
         longitude = gpsTracker!!.longitude
 
         Logger.t(TAG.LOCATION).d("location :: $latitude, $longitude")
+        CoroutineScope(Dispatchers.IO).launch {
+            val schedule = TripSchedule(
+                area = "서울",
+                latitude = latitude.toString(),
+                longitude = longitude.toString(),
+                startDate = null,
+                endDate = null,
+                saveTime = System.currentTimeMillis(),
+                updateTime = null,
+                deleteTime = null
+            )
+            viewModel.insertSchedule(schedule)
+        }
     }
 
 }
