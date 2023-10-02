@@ -40,6 +40,7 @@ android {
 
 }
 
+def roomVersion = "2.4.3"
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -56,5 +57,14 @@ dependencies {
     // google map
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
+    implementation 'com.google.maps.android:maps-utils-ktx:3.4.0'
+
+//    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    implementation "androidx.room:room-rxjava3:$roomVersion"
+    implementation("androidx.room:room-paging:$roomVersion")
 
 }
