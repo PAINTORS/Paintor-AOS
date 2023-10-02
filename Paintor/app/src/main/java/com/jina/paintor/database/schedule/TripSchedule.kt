@@ -1,12 +1,13 @@
-package com.jina.paintor.database
+package com.jina.paintor.database.schedule
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName = "TripScheduleTable", primaryKeys = ["id", "area", "latitude", "longitude"])
+@Entity(tableName = "TripScheduleTable")
 data class TripSchedule(
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = 0,
     @ColumnInfo(name = "area")
@@ -15,6 +16,10 @@ data class TripSchedule(
     val latitude: String,
     @ColumnInfo(name = "longitude")
     val longitude: String,
+    @ColumnInfo(name = "tripStatus")
+    var tripStatus: Boolean,
+    @ColumnInfo(name = "tripColor")
+    var tripColor: Int,
     @ColumnInfo(name = "startDate")
     var startDate: Long?,
     @ColumnInfo(name = "endDate")
