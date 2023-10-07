@@ -3,6 +3,7 @@ package com.jina.paintor.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.navigation.NavigationBarView
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         supportFragmentManager.beginTransaction().replace(R.id.flLayout, locationFragment)
             .commitAllowingStateLoss()
 
+        binding.includeToolbar.isMain = true
         binding.includeToolbar.toolbarTitle = "PAINTOR"
 
         binding.bottomNaviView.setOnItemSelectedListener(this)
