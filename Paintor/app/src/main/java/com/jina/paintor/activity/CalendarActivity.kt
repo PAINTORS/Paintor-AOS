@@ -9,14 +9,18 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import com.jina.paintor.R
-import com.jina.paintor.adapter.DayViewContainer
+import com.jina.paintor.calendar.ContinuousSelectionHelper
+import com.jina.paintor.calendar.ContinuousSelectionHelper.getSelection
+import com.jina.paintor.calendar.DateSelection
 import com.jina.paintor.databinding.ActivityCalendarBinding
+import com.jina.paintor.databinding.ItemCalendarDayBinding
 import com.jina.paintor.utils.TAG
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.MonthDayBinder
+import com.kizitonwose.calendar.view.ViewContainer
 import com.orhanobut.logger.Logger
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -30,8 +34,8 @@ class CalendarActivity : AppCompatActivity() {
     private val binding: ActivityCalendarBinding by lazy {
         ActivityCalendarBinding.inflate(layoutInflater)
     }
-    private var startDate = LocalDate.now()
-    private var selectDate: LocalDate? = startDate
+    private var selectDate = DateSelection()
+    private var today = LocalDate.now()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,51 +43,7 @@ class CalendarActivity : AppCompatActivity() {
 
         binding.includeToolbar.toolbarTitle = "여행 계획"
         binding.includeToolbar.ivNewPlan.visibility = View.VISIBLE
-
-        binding.calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
-            override fun bind(container: DayViewContainer, data: CalendarDay) {
-                container.day = data
-                val day = container.day
-                val textView = container.tvDay
-                container.tvDay.text = data.date.dayOfMonth.toString()
-                container.tvDay.setTextColor(if (data.position == DayPosition.MonthDate) Color.BLACK else Color.GRAY)
-
-                container.view.setOnClickListener {
-                    Logger.t(TAG.CALENDAR).d("click~")
-                    if (day.position == DayPosition.MonthDate) {
-                        val currentSelection = selectDate
-                        if (currentSelection == day.date) {
-                            selectDate = null
-                            binding.calendarView.notifyCalendarChanged()
-                        } else {
-                            selectDate = day.date
-                            binding.calendarView.notifyDateChanged(day.date)
-                            if (currentSelection != null) {
-                                binding.calendarView.notifyDateChanged(currentSelection)
-                            }
-                        }
-                    }
-                }
-
-                if (day.position == DayPosition.MonthDate) {
-                    textView.visibility = View.VISIBLE
-                    if (day.date == selectDate) {
-                        textView.setTextColor(Color.WHITE)
-                        textView.setBackgroundResource(R.drawable.shape_bg_select_day)
-                    } else {
-                        textView.setTextColor(Color.BLACK)
-                        textView.background = null
-                    }
-                } else {
-                    textView.visibility == View.INVISIBLE
-                }
-
-            }
-
-            override fun create(view: View) = DayViewContainer(view)
-
-        }
-
+        configureBinders()
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusMonths(100)  // Adjust as needed
         val endMonth = currentMonth.plusMonths(100)  // Adjust as needed
@@ -99,4 +59,113 @@ class CalendarActivity : AppCompatActivity() {
         binding.calendarView.scrollToMonth(currentMonth)
 
     }
+
+    private fun configureBinders() {
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            lateinit var day: CalendarDay // Will be set when this container is bound.
+            val binding = ItemCalendarDayBinding.bind(view)
+
+            init {
+                view.setOnClickListener {
+                    if (day.position == DayPosition.MonthDate &&
+                        (day.date == today || day.date.isAfter(today))
+                    ) {
+                        selectDate = getSelection(
+                            clickedDate = day.date,
+                            dateSelection = selectDate,
+                        )
+                        this@CalendarActivity.binding.calendarView.notifyCalendarChanged()
+                    }
+                }
+            }
+        }
+
+        binding.calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, data: CalendarDay) {
+                container.day = data
+                val textView = container.binding.tvDay
+                val viewRange = container.binding.viewRange
+
+                viewRange.visibility = View.INVISIBLE
+
+                val (startDate, endDate) = selectDate
+
+                when (data.position) {
+                    DayPosition.MonthDate -> {
+                        textView.text = data.date.dayOfMonth.toString()
+                        when {
+                            startDate == data.date && endDate == null -> { // 이게 첫 날짜 선택
+                                Logger.t(TAG.CALENDAR)
+                                    .d("startDate == data.date && endDate == null\n${data.date}")
+                                textView.setTextColor(getColor(R.color.white))
+                                textView.setBackgroundResource(R.drawable.shape_bg_single_day)
+                            }
+
+                            data.date == startDate -> {
+                                // end date 클릭 시 이거 호출
+                                Logger.t(TAG.CALENDAR)
+                                    .d(" data.date == startDate == null\n${data.date}")
+                                textView.setTextColor(getColor(R.color.white))
+                                textView.setBackgroundResource(R.drawable.shape_bg_single_day)
+                                viewRange.visibility = View.VISIBLE
+                                viewRange.setBackgroundResource(R.drawable.shape_bg_start_day)
+                            }
+
+                            startDate != null && endDate != null && (data.date > startDate && data.date < endDate) -> {
+                                // end date 클릭 시 이거 호출
+                                Logger.t(TAG.CALENDAR)
+                                    .d("startDate != null && endDate != null && (data.date > startDate && data.date < endDate) \n${data.date}")
+                                textView.setTextColor(Color.DKGRAY)
+                                viewRange.visibility = View.VISIBLE
+                                viewRange.setBackgroundResource(R.drawable.shape_bg_range_day)
+                            }
+
+                            data.date == endDate -> { // end date 클릭
+                                Logger.t(TAG.CALENDAR)
+                                    .d("data.date == endDate\n${data.date}")
+                                textView.setTextColor(getColor(R.color.white))
+                                textView.setBackgroundResource(R.drawable.shape_bg_single_day)
+                                viewRange.visibility = View.VISIBLE
+                                viewRange.setBackgroundResource(R.drawable.shape_bg_end_day)
+                            }
+
+                            data.date == today -> {
+                                Logger.t(TAG.CALENDAR)
+                                    .d("data.date == today\n${data.date}")
+                                textView.setTextColor(getColor(R.color.main_color))
+                            }
+
+                            else -> textView.setTextColor(getColor(R.color.black))
+                        }
+                    }
+
+                    DayPosition.InDate -> {
+                        if (startDate != null && endDate != null && ContinuousSelectionHelper.isInDateBetweenSelection(
+                                data.date,
+                                startDate,
+                                endDate
+                            )
+                        ) {
+                            viewRange.setBackgroundResource(R.drawable.shape_bg_single_day)
+                        }
+                    }
+
+                    DayPosition.OutDate -> {
+                        if (startDate != null && endDate != null && ContinuousSelectionHelper.isOutDateBetweenSelection(
+                                data.date,
+                                startDate,
+                                endDate
+                            )
+                        ) {
+                            viewRange.setBackgroundResource(R.drawable.shape_bg_single_day)
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+
 }
