@@ -47,6 +47,10 @@ class CalendarActivity : AppCompatActivity() {
         binding.includeToolbar.toolbarTitle = "여행 계획"
         binding.includeToolbar.ivNewPlan.visibility = View.VISIBLE
         setCalendarView()
+
+        binding.tvToday.setOnClickListener {
+            binding.calendarView.smoothScrollToMonth(YearMonth.now())
+        }
     }
 
     fun setCalendarView() {
