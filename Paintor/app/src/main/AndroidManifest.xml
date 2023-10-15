@@ -71,6 +71,9 @@
         android:theme="@style/Theme.Paintor"
         tools:targetApi="31">
         <activity
+            android:name=".activity.SearchLocationActivity"
+            android:exported="true" />
+        <activity
             android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -86,15 +89,16 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAb4IcFEfDi4aIXWIBtEHGX2Nt8cfcv96s" />
+            android:value="@string/GOOGLE_API_KEY" />
 
         <activity
             android:name=".activity.CalendarActivity"
-            android:exported="false" />
+            android:exported="true">
+
+        </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
     </application>
 
 </manifest>
