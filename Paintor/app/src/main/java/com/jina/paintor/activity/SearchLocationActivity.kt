@@ -2,6 +2,8 @@ package com.jina.paintor.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,13 +28,25 @@ class SearchLocationActivity : AppCompatActivity() {
             adapter = locationAdapter
             layoutManager = LinearLayoutManager(context)
         }
-        binding.etLocation.addTextChangedListener {
-            if (it.toString() != "") {
-                locationAdapter.filter?.filter(it.toString())
-                binding.rvLocation.visibility == View.VISIBLE
-            } else {
-                binding.rvLocation.visibility == View.GONE
+
+        binding.etLocation.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
             }
-        }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+               if (s.isNullOrBlank()) {
+                   binding.rvLocation.visibility = View.GONE
+               } else {
+                   locationAdapter.filter?.filter(s.toString())
+                   binding.rvLocation.visibility = View.VISIBLE
+               }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+        })
     }
 }
