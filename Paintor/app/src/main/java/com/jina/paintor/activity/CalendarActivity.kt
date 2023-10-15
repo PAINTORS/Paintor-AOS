@@ -29,6 +29,7 @@ import com.kizitonwose.calendar.view.ViewContainer
 import com.orhanobut.logger.Logger
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Month
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -91,6 +92,23 @@ class CalendarActivity : AppCompatActivity() {
                 override fun bind(container: DayViewContainer, data: CalendarDay) {
                     container.day = data
                     bindDate(data, container.binding.tvDay, container.binding.viewRange)
+                    val isSunday = data.date.dayOfWeek == DayOfWeek.SUNDAY
+                    val isSaturday = data.date.dayOfWeek == DayOfWeek.SATURDAY
+                    container.binding.tvDay.setTextColor(
+                        when {
+                            isSunday -> {
+                                Color.RED
+                            }
+
+                            isSaturday -> {
+                                Color.BLUE
+                            }
+
+                            else -> {
+                                Color.BLACK
+                            }
+                        }
+                    )
                 }
             }
             monthScrollListener = { updateTitle() }
