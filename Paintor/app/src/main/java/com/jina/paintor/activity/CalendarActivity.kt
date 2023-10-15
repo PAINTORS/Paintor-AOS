@@ -1,5 +1,6 @@
 package com.jina.paintor.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -41,6 +42,12 @@ class CalendarActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.includeToolbar.toolbarTitle = "여행 계획"
         binding.includeToolbar.ivNewPlan.visibility = View.VISIBLE
+
+
+        binding.includeToolbar.ivNewPlan.setOnClickListener {
+startActivity(Intent(this, SearchLocationActivity::class.java))
+        }
+
         setCalendarView()
 
         binding.tvToday.setOnClickListener {
