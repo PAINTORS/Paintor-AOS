@@ -23,6 +23,7 @@ import com.kizitonwose.calendar.view.ViewContainer
 import com.orhanobut.logger.Logger
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Month
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -72,6 +73,7 @@ class CalendarActivity : AppCompatActivity() {
             }
         }
 
+        // 요일
         binding.layoutDayOfWeek.root.children.map { it as TextView }
             .forEachIndexed { index, textView ->
                 val dayOfWeek = daysOfWeek[index]
@@ -95,6 +97,13 @@ class CalendarActivity : AppCompatActivity() {
 
     fun bindDate(data: CalendarDay, textView: TextView, viewRange: View) {
         val (startDate, endDate) = selectDate
+
+        fun resetViews(color: Int) {
+            textView.setTextColor(color)
+            textView.background = null
+            viewRange.background = null
+        }
+
         when (data.position) {
             DayPosition.MonthDate -> {
                 textView.text = data.date.dayOfMonth.toString()
@@ -131,49 +140,51 @@ class CalendarActivity : AppCompatActivity() {
                     data.date == today -> {
                         Logger.t(TAG.CALENDAR).d("today : ${data.date}")
                         textView.setTextColor(getColor(R.color.main_color))
+                        resetViews(R.color.main_color)
                     }
 
                     data.date.dayOfWeek == DayOfWeek.SUNDAY && !data.date.isBefore(today) -> {
                         textView.setTextColor(Color.RED)
+                        resetViews(Color.RED)
                     }
 
                     data.date.dayOfWeek == DayOfWeek.SATURDAY && !data.date.isBefore(today) -> {
                         textView.setTextColor(Color.BLUE)
+                        resetViews(Color.BLUE)
                     }
 
                     data.date.isBefore(today) -> {
                         textView.setTextColor(Color.GRAY)
                     }
 
+
+
                     else -> {
-                        textView.setTextColor(getColor(R.color.black))
-                        textView.background = null
-                        viewRange.background = null
+                        resetViews(Color.BLACK)
                     }
                 }
             }
 
-            DayPosition.InDate -> {
-                if (startDate != null && endDate != null && ContinuousSelectionHelper.isInDateBetweenSelection(
-                        data.date,
-                        startDate,
-                        endDate
-                    )
-                ) {
-                    Logger.t(TAG.CALENDAR).d("InDate : ${data.date}")
-                    viewRange.setBackgroundResource(R.drawable.shape_bg_single_day)
-                }
-            }
+            DayPosition.InDate, DayPosition.OutDate -> {
+                val isInDate = data.position == DayPosition.InDate &&
+                        startDate != null && endDate != null &&
+                        ContinuousSelectionHelper.isInDateBetweenSelection(
+                            data.date,
+                            startDate,
+                            endDate
+                        )
+                val isOutDate = data.position == DayPosition.OutDate &&
+                        startDate != null && endDate != null &&
+                        ContinuousSelectionHelper.isOutDateBetweenSelection(
+                            data.date,
+                            startDate,
+                            endDate
+                        )
 
-            DayPosition.OutDate -> {
-                if (startDate != null && endDate != null && ContinuousSelectionHelper.isOutDateBetweenSelection(
-                        data.date,
-                        startDate,
-                        endDate
-                    )
-                ) {
-                    Logger.t(TAG.CALENDAR).d("OutDate : ${data.date}")
-                    viewRange.setBackgroundResource(R.drawable.shape_bg_single_day)
+                if (isInDate || isOutDate) {
+                    Logger.t(TAG.CALENDAR).d("${data.position} : ${data.date}")
+                    viewRange.setBackgroundResource(R.drawable.shape_bg_range_day)
+                    textView.visibility = View.INVISIBLE
                 }
             }
         }
