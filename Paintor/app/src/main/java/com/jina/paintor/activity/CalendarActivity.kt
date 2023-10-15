@@ -45,7 +45,7 @@ class CalendarActivity : AppCompatActivity() {
 
 
         binding.includeToolbar.ivNewPlan.setOnClickListener {
-startActivity(Intent(this, SearchLocationActivity::class.java))
+            startActivity(Intent(this, SearchLocationActivity::class.java))
         }
 
         setCalendarView()
@@ -163,7 +163,6 @@ startActivity(Intent(this, SearchLocationActivity::class.java))
                     data.date.isBefore(today) -> {
                         textView.setTextColor(Color.GRAY)
                     }
-
 
 
                     else -> {

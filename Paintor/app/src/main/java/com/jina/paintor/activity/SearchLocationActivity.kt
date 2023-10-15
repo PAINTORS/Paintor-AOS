@@ -23,7 +23,8 @@ class SearchLocationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         Places.initialize(applicationContext, getString(R.string.GOOGLE_API_KEY))
-
+        binding.includeToolbar.ivNewPlan.visibility = View.GONE
+        binding.includeToolbar.toolbarTitle = "여행지 검색"
         binding.rvLocation.apply {
             adapter = locationAdapter
             layoutManager = LinearLayoutManager(context)
@@ -35,12 +36,12 @@ class SearchLocationActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-               if (s.isNullOrBlank()) {
-                   binding.rvLocation.visibility = View.GONE
-               } else {
-                   locationAdapter.filter?.filter(s.toString())
-                   binding.rvLocation.visibility = View.VISIBLE
-               }
+                if (s.isNullOrBlank()) {
+                    binding.rvLocation.visibility = View.GONE
+                } else {
+                    locationAdapter.filter?.filter(s.toString())
+                    binding.rvLocation.visibility = View.VISIBLE
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
