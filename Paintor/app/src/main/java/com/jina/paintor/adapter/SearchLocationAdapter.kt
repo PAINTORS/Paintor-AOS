@@ -15,6 +15,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.jina.paintor.R
 import com.jina.paintor.databinding.ItemCalendarDayBinding
 import com.jina.paintor.databinding.ItemSearchLocationBinding
+import com.jina.paintor.ui.setHighlightText
 import com.jina.paintor.utils.TAG
 import com.orhanobut.logger.Logger
 import java.util.concurrent.ExecutionException
@@ -26,6 +27,7 @@ class SearchLocationAdapter(val context: Context) :
     RecyclerView.Adapter<SearchLocationAdapter.ViewHolder>(), Filterable {
     //    val placesClient = Places.createClient(context)
     private var mResultList = ArrayList<PlaceAutocomplete>()
+    private var searchTxt:String = ""
 
     inner class ViewHolder(val binding: ItemSearchLocationBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,7 +49,7 @@ class SearchLocationAdapter(val context: Context) :
 
     override fun onBindViewHolder(holder: SearchLocationAdapter.ViewHolder, position: Int) {
         holder.binding.ivFlag.setBackgroundResource(R.drawable.ic_korea_flag)
-        holder.binding.tvLocation.text = mResultList[position].address
+        holder.binding.tvLocation.setHighlightText(mResultList[position].address.toString(), searchTxt)
         Logger.t(TAG.LOCATION)
             .d("adrress : ${mResultList[position].address}\narea : ${mResultList[position].area}")
     }
@@ -66,6 +68,7 @@ class SearchLocationAdapter(val context: Context) :
                     mResultList = getPredictions(constraint)
                     if (mResultList != null) {
                         // The API successfully returned results.
+                        searchTxt = constraint.toString()
                         results.values = mResultList
                         results.count = mResultList.size
                     }
