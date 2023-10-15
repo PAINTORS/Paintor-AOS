@@ -9,27 +9,20 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import com.jina.paintor.R
-import com.jina.paintor.adapter.DayViewContainer
 import com.jina.paintor.calendar.ContinuousSelectionHelper
 import com.jina.paintor.calendar.ContinuousSelectionHelper.getSelection
 import com.jina.paintor.calendar.DateSelection
 import com.jina.paintor.databinding.ActivityCalendarBinding
-import com.jina.paintor.databinding.IncludeDayOfWeekBinding
 import com.jina.paintor.databinding.ItemCalendarDayBinding
 import com.jina.paintor.utils.TAG
 import com.kizitonwose.calendar.core.CalendarDay
-import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
-import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
-import com.kizitonwose.calendar.core.yearMonth
 import com.kizitonwose.calendar.view.MonthDayBinder
-import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
 import com.orhanobut.logger.Logger
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.Month
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
@@ -92,26 +85,9 @@ class CalendarActivity : AppCompatActivity() {
                 override fun bind(container: DayViewContainer, data: CalendarDay) {
                     container.day = data
                     bindDate(data, container.binding.tvDay, container.binding.viewRange)
-                    val isSunday = data.date.dayOfWeek == DayOfWeek.SUNDAY
-                    val isSaturday = data.date.dayOfWeek == DayOfWeek.SATURDAY
-                    container.binding.tvDay.setTextColor(
-                        when {
-                            isSunday -> {
-                                Color.RED
-                            }
-
-                            isSaturday -> {
-                                Color.BLUE
-                            }
-
-                            else -> {
-                                Color.BLACK
-                            }
-                        }
-                    )
                 }
             }
-            monthScrollListener = { updateTitle() }
+            monthScrollListener = { updateMonth() }
             setup(startMonth, endMonth, daysOfWeek().first())
             scrollToMonth(currentMonth)
         }
@@ -143,7 +119,7 @@ class CalendarActivity : AppCompatActivity() {
                         viewRange.visibility = View.VISIBLE
                         viewRange.setBackgroundResource(R.drawable.shape_bg_range_day)
                     }
-// end date 클릭
+                    // end date 클릭
                     data.date == endDate -> {
                         Logger.t(TAG.CALENDAR).i("endDate : ${data.date}")
                         textView.setTextColor(getColor(R.color.white))
@@ -155,6 +131,18 @@ class CalendarActivity : AppCompatActivity() {
                     data.date == today -> {
                         Logger.t(TAG.CALENDAR).d("today : ${data.date}")
                         textView.setTextColor(getColor(R.color.main_color))
+                    }
+
+                    data.date.dayOfWeek == DayOfWeek.SUNDAY && !data.date.isBefore(today) -> {
+                        textView.setTextColor(Color.RED)
+                    }
+
+                    data.date.dayOfWeek == DayOfWeek.SATURDAY && !data.date.isBefore(today) -> {
+                        textView.setTextColor(Color.BLUE)
+                    }
+
+                    data.date.isBefore(today) -> {
+                        textView.setTextColor(Color.GRAY)
                     }
 
                     else -> {
@@ -191,7 +179,7 @@ class CalendarActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateTitle() {
+    private fun updateMonth() {
         val month = binding.calendarView.findFirstVisibleMonth()?.yearMonth ?: return
         binding.tvMonth.text = month.month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
     }
