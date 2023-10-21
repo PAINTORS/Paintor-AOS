@@ -10,11 +10,12 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
-import com.jina.paintor.R
-import com.jina.paintor.databinding.ItemCalendarDayBinding
+import com.jina.paintor.data.Location
 import com.jina.paintor.databinding.ItemSearchLocationBinding
+import com.jina.paintor.ui.setCountryFlag
 import com.jina.paintor.ui.setHighlightText
 import com.jina.paintor.utils.TAG
 import com.orhanobut.logger.Logger
@@ -25,9 +26,8 @@ import java.util.concurrent.TimeoutException
 
 class SearchLocationAdapter(val context: Context) :
     RecyclerView.Adapter<SearchLocationAdapter.ViewHolder>(), Filterable {
-    //    val placesClient = Places.createClient(context)
-    private var mResultList = ArrayList<PlaceAutocomplete>()
-    private var searchTxt:String = ""
+    private var mResultList = ArrayList<Location>()
+    private var searchTxt: String = ""
 
     inner class ViewHolder(val binding: ItemSearchLocationBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -48,10 +48,13 @@ class SearchLocationAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(holder: SearchLocationAdapter.ViewHolder, position: Int) {
-        holder.binding.ivFlag.setBackgroundResource(R.drawable.ic_korea_flag)
-        holder.binding.tvLocation.setHighlightText(mResultList[position].address.toString(), searchTxt)
-        Logger.t(TAG.LOCATION)
-            .d("adrress : ${mResultList[position].address}\narea : ${mResultList[position].area}")
+        // NOTE : 자..잠깐... 국가가 195개나 된다고..?ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ....
+        // https://opendata.mofa.go.kr/lod/countryInfo.do
+        holder.binding.ivFlag.setCountryFlag(mResultList[position].countryName.toString())
+        holder.binding.tvLocation.setHighlightText(
+            mResultList[position].fullName.toString(),
+            searchTxt
+        )
     }
 
     override fun getItemCount(): Int {
@@ -88,28 +91,16 @@ class SearchLocationAdapter(val context: Context) :
         }
     }
 
-    private fun getPredictions(constraint: CharSequence): ArrayList<PlaceAutocomplete> {
-        val resultList: ArrayList<PlaceAutocomplete> = ArrayList<PlaceAutocomplete>()
-
-        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
-        // and once again when the user makes a selection (for example when calling fetchPlace()).
+    private fun getPredictions(constraint: CharSequence): ArrayList<Location> {
+        val resultList: ArrayList<Location> = ArrayList<Location>()
         val token = AutocompleteSessionToken.newInstance()
-
-        //https://gist.github.com/graydon/11198540
-        // Use the builder to create a FindAutocompletePredictionsRequest.
-        val request =
-            FindAutocompletePredictionsRequest.builder() // Call either setLocationBias() OR setLocationRestriction().
-                //.setLocationBias(bounds)
-                //.setCountry("BD")
-                //.setTypeFilter(TypeFilter.ADDRESS)
-                .setSessionToken(token)
-                .setQuery(constraint.toString())
-                .build()
+        val request = FindAutocompletePredictionsRequest.builder()
+            .setTypeFilter(TypeFilter.CITIES)
+            .setSessionToken(token)
+            .setQuery(constraint.toString())
+            .build()
         val autocompletePredictions: Task<FindAutocompletePredictionsResponse> =
             Places.createClient(context).findAutocompletePredictions(request)
-
-        // This method should have been called off the main UI thread. Block and wait for at most
-        // 60s for a result from the API.
         try {
             Tasks.await<FindAutocompletePredictionsResponse>(
                 autocompletePredictions,
@@ -125,30 +116,28 @@ class SearchLocationAdapter(val context: Context) :
         }
         return if (autocompletePredictions.isSuccessful) {
             val findAutocompletePredictionsResponse = autocompletePredictions.result
-            if (findAutocompletePredictionsResponse != null) for (prediction in findAutocompletePredictionsResponse.autocompletePredictions) {
-//                Log.i(TAG, prediction.placeId)
-                Logger.t(TAG.LOCATION).i("successfull\n$prediction")
-                resultList.add(
-                    PlaceAutocomplete(
-                        prediction.placeId,
-                        prediction.getPrimaryText(null).toString(),
-                        prediction.getFullText(null).toString()
+            if (findAutocompletePredictionsResponse != null) {
+                for (prediction in findAutocompletePredictionsResponse.autocompletePredictions) {
+                    Logger.t(TAG.LOCATION).i(
+                        "getPrimaryText : ${prediction.getPrimaryText(null).toString()}\n" +
+                                "getSecondaryText : ${
+                                    prediction.getSecondaryText(null).toString()
+                                }\n" +
+                                "getFullText : ${prediction.getFullText(null).toString()}"
                     )
-                )
+                    resultList.add(
+                        Location(
+                            prediction.placeId,
+                            prediction.getPrimaryText(null).toString(), // city
+                            prediction.getSecondaryText(null).toString(), // country
+                            prediction.getFullText(null).toString() // full
+                        )
+                    )
+                }
             }
             resultList
         } else {
             resultList
-        }
-    }
-
-    class PlaceAutocomplete internal constructor(
-        var placeId: CharSequence,
-        var area: CharSequence,
-        var address: CharSequence
-    ) {
-        override fun toString(): String {
-            return area.toString()
         }
     }
 }
