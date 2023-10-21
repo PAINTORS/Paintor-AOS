@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CommonButton">
+        <attr name="title" format="reference|string" />
+        <attr name="titleSize" format="dimension" />
+        <attr name="titleColor" format="reference|color" />
+        <attr name="enableColor" format="reference|color" />
+        <attr name="disableColor" format="reference|color" />
+    </declare-styleable>
+
+    <declare-styleable name="CommonEditText">
+        <attr name="text" format="reference|string" />
+        <attr name="textSize" format="dimension" />
+        <attr name="password" format="boolean" />
+        <attr name="layoutMarginTop" format="dimension" />
+        <attr name="layoutMarginBottom" format="dimension" />
+        <attr name="layoutMarginLeft" format="dimension" />
+        <attr name="layoutMarginRight" format="dimension" />
+        <attr name="android:inputType"/>
+    </declare-styleable>
+
+    <declare-styleable name="SettingItem">
+        <attr name="item_icon" format="reference" />
+        <attr name="item_title" format="string|reference" />
+        <attr name="item_summary" format="string|reference" />
+        <attr name="summary_color" format="color|reference" />
+        <attr name="used_progress" format="boolean" />
+        <attr name="used_switch" format="boolean" />
+        <attr name="used_divide" format="boolean" />
+        <attr name="padding_side" format="dimension|reference" />
+        <attr name="disabled" format="boolean" />
+    </declare-styleable>
+</resources>
