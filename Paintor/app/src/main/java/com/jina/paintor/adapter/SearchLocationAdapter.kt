@@ -1,10 +1,14 @@
 package com.jina.paintor.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -13,8 +17,11 @@ import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.jina.paintor.R
 import com.jina.paintor.data.Location
+import com.jina.paintor.database.MainViewModel
 import com.jina.paintor.databinding.ItemSearchLocationBinding
+import com.jina.paintor.tripscheudule.ScheduleManager
 import com.jina.paintor.ui.setCountryFlag
 import com.jina.paintor.ui.setHighlightText
 import com.jina.paintor.utils.TAG
@@ -24,7 +31,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 
-class SearchLocationAdapter(val context: Context) :
+class SearchLocationAdapter(val context: Context, val viewModel: MainViewModel) :
     RecyclerView.Adapter<SearchLocationAdapter.ViewHolder>(), Filterable {
     private var mResultList = ArrayList<Location>()
     private var searchTxt: String = ""
@@ -47,14 +54,31 @@ class SearchLocationAdapter(val context: Context) :
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: SearchLocationAdapter.ViewHolder, position: Int) {
         // NOTE : 자..잠깐... 국가가 195개나 된다고..?ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ....
         // https://opendata.mofa.go.kr/lod/countryInfo.do
+        // TODO : 10/22 저장 정보 가져와서 보여줄지 말지 확인
+        holder.binding.isVisited = false
+
+
         holder.binding.ivFlag.setCountryFlag(mResultList[position].countryName.toString())
         holder.binding.tvLocation.setHighlightText(
             mResultList[position].fullName.toString(),
             searchTxt
         )
+
+        holder.binding.root.setOnClickListener {
+            holder.binding.root.isSelected = mResultList[position].placeId == viewModel.selectedLocation.value?.placeId
+            if (holder.binding.root.isSelected) {
+                ScheduleManager.selectedLocation.value = null
+                it.setBackgroundColor(Color.TRANSPARENT)
+            } else {
+                ScheduleManager.selectedLocation.postValue(mResultList[position])
+                it.setBackgroundColor(context.getColor(R.color.range_color))
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -118,13 +142,13 @@ class SearchLocationAdapter(val context: Context) :
             val findAutocompletePredictionsResponse = autocompletePredictions.result
             if (findAutocompletePredictionsResponse != null) {
                 for (prediction in findAutocompletePredictionsResponse.autocompletePredictions) {
-                    Logger.t(TAG.LOCATION).i(
-                        "getPrimaryText : ${prediction.getPrimaryText(null).toString()}\n" +
-                                "getSecondaryText : ${
-                                    prediction.getSecondaryText(null).toString()
-                                }\n" +
-                                "getFullText : ${prediction.getFullText(null).toString()}"
-                    )
+//                    Logger.t(TAG.LOCATION).i(
+//                        "getPrimaryText : ${prediction.getPrimaryText(null).toString()}\n" +
+//                                "getSecondaryText : ${
+//                                    prediction.getSecondaryText(null).toString()
+//                                }\n" +
+//                                "getFullText : ${prediction.getFullText(null).toString()}"
+//                    ) // debug
                     resultList.add(
                         Location(
                             prediction.placeId,

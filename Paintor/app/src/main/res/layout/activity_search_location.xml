@@ -42,14 +42,17 @@
         app:layout_constraintTop_toBottomOf="@id/etLocation"
         tools:listitem="@layout/item_search_location" />
 
-    <Button
+    <com.jina.paintor.ui.CommonButton
         android:id="@+id/btnSelect"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
-        android:text="여행지를 선택해 주세요."
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:enableColor="@color/disable_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:title="여행지를 선택해 주세요."
+        app:titleColor="@color/white"
+        app:titleSize="15dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

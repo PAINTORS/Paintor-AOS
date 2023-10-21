@@ -10,4 +10,5 @@
 
     <color name="main_color">#42C2FF</color>
     <color name="range_color">#3042C2FF</color>
+    <color name="disable_color">#70444444</color>
 </resources>
