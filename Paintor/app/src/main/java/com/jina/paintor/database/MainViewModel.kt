@@ -16,7 +16,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val tripScheduleManager = ScheduleManager
     val tripScheduleRepository = TripScheduleRepository()
     private val _tripHistory = tripScheduleRepository.tripHistory
-    val tripHistory: LiveData<MutableList<TripHistory>>
+    val tripHistory: LiveData<MutableList<TripSchedule>>
         get() = _tripHistory
 
     private val _selectedLocation = tripScheduleManager.selectedLocation

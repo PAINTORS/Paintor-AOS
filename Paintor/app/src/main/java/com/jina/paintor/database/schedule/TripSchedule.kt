@@ -10,8 +10,12 @@ data class TripSchedule(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = 0,
-    @ColumnInfo(name = "area")
-    val area: String,
+    @ColumnInfo(name = "placeId")
+    val placeId: String,
+    @ColumnInfo(name = "countryName")
+    val countryName: String,
+    @ColumnInfo(name = "cityName")
+    val cityName: String,
     @ColumnInfo(name = "latitude")
     val latitude: String,
     @ColumnInfo(name = "longitude")
@@ -21,9 +25,9 @@ data class TripSchedule(
     @ColumnInfo(name = "tripColor")
     var tripColor: Int,
     @ColumnInfo(name = "startDate")
-    var startDate: Long?,
+    var startDate: String?,
     @ColumnInfo(name = "endDate")
-    var endDate: Long?,
+    var endDate: String?,
     @ColumnInfo(name = "saveTime")
     var saveTime: Long,
     @ColumnInfo(name = "updateTime")

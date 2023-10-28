@@ -43,6 +43,7 @@
             tools:text="@string/app_name" />
 
         <ImageView
+            android:id="@+id/ivTrip"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:visibility="@{isVisited ? View.VISIBLE : View.GONE}"
