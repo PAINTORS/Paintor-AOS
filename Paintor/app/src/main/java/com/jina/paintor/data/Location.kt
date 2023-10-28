@@ -6,7 +6,8 @@ data class Location(
     var placeId: CharSequence,
     var cityName: CharSequence,
     val countryName: CharSequence,
-    var fullName: CharSequence
+    var fullName: CharSequence,
+    val placeColor: Int = 0
 ) {
 
     override fun toString(): String {

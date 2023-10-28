@@ -1,76 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.CalendarActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="isNewPlan"
+            type="Boolean" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        android:layout_height="match_parent"
+        tools:context=".activity.CalendarActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+
+            <include
+                android:id="@+id/includeToolbar"
+                layout="@layout/include_tool_bar" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/tvMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/appBar"
+            tools:text="10월" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="@id/tvMonth"
+            app:layout_constraintRight_toLeftOf="@id/tvToday"
+            app:layout_constraintTop_toTopOf="@id/tvMonth" />
+
+        <TextView
+            android:id="@+id/tvToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="today"
+            app:layout_constraintBottom_toBottomOf="@id/tvMonth"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvMonth" />
 
         <include
-            android:id="@+id/includeToolbar"
-            layout="@layout/include_tool_bar" />
+            android:id="@+id/layoutDayOfWeek"
+            layout="@layout/include_day_of_week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toTopOf="@id/calendarView"
+            app:layout_constraintTop_toBottomOf="@id/tvMonth" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <com.kizitonwose.calendar.view.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cv_dayViewResource="@layout/item_calendar_day"
+            app:layout_constraintTop_toBottomOf="@id/layoutDayOfWeek"
+            tools:listitem="@layout/item_calendar_day" />
 
-    <TextView
-        android:id="@+id/tvMonth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/appBar"
-        tools:text="10월" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPlan"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:visibility="@{isNewPlan ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/btnFinish"
+            app:layout_constraintTop_toBottomOf="@id/calendarView" />
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/ic_search"
-        app:layout_constraintBottom_toBottomOf="@id/tvMonth"
-        app:layout_constraintRight_toLeftOf="@id/tvToday"
-        app:layout_constraintTop_toTopOf="@id/tvMonth" />
+        <include
+            android:id="@+id/layoutSelectSchedule"
+            layout="@layout/include_select_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@id/btnFinish" />
+<!--            android:visibility="@{isNewPlan ? View.VISIBLE : View.GONE}"-->
 
-    <TextView
-        android:id="@+id/tvToday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:text="today"
-        app:layout_constraintBottom_toBottomOf="@id/tvMonth"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvMonth" />
+        <com.jina.paintor.ui.CommonButton
+            android:id="@+id/btnFinish"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="@{isNewPlan ? View.VISIBLE : View.GONE}"
+            app:enableColor="@color/disable_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:title="확인"
+            app:titleColor="@color/white"
+            app:titleSize="15dp" />
 
-    <include
-        android:id="@+id/layoutDayOfWeek"
-        layout="@layout/include_day_of_week"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/calendarView"
-        app:layout_constraintTop_toBottomOf="@id/tvMonth" />
-
-    <com.kizitonwose.calendar.view.CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cv_dayViewResource="@layout/item_calendar_day"
-        app:layout_constraintTop_toBottomOf="@id/layoutDayOfWeek"
-        tools:listitem="@layout/item_calendar_day" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPlan"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarView" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

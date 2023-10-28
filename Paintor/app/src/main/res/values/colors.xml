@@ -11,4 +11,14 @@
     <color name="main_color">#42C2FF</color>
     <color name="range_color">#3042C2FF</color>
     <color name="disable_color">#70444444</color>
+
+
+<!-- TODO : 10/24 추후 사용자 지정 color 추가될 예정 -->
+    <color name="default_color_01">#0072BD</color>
+    <color name="default_color_02">#D95319</color>
+    <color name="default_color_03">#EDB120</color>
+    <color name="default_color_04">#7E2F8E</color>
+    <color name="default_color_05">#77AC30</color>
+    <color name="default_color_06">#4DBEEE</color>
+    <color name="default_color_07">#A2142F</color>
 </resources>

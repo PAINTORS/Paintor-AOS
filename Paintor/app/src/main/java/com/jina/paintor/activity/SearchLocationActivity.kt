@@ -1,6 +1,7 @@
 package com.jina.paintor.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,7 +31,7 @@ class SearchLocationActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var locationAdapter: SearchLocationAdapter
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +77,9 @@ class SearchLocationActivity : AppCompatActivity() {
                     this.isEnabled = true
                     this.setBackgroundColor(getColor(R.color.main_color))
                     this.setOnClickListener {
-                        // TODO : 10/22 CalendarActivity 넘어가기
+                        val intent = Intent(this@SearchLocationActivity, CalendarActivity::class.java)
+                        intent.putExtra(ScheduleManager.SELECT_LOCATION, true)
+                        startActivity(intent)
                     }
                 }
             }

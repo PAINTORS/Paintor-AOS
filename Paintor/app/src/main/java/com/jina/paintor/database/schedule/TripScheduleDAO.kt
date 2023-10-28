@@ -11,6 +11,6 @@ interface TripScheduleDAO {
     @Insert
     fun insertSchedule(schedule: TripSchedule)
 
-    @Query("SELECT area, latitude, longitude, tripStatus, tripColor FROM TripScheduleTable")
-    fun tripHistory(): LiveData<MutableList<TripHistory>>
+    @Query("SELECT * FROM TripScheduleTable")
+    fun tripHistory(): LiveData<MutableList<TripSchedule>>
 }

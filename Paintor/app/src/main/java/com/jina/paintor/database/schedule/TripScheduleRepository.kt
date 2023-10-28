@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class TripScheduleRepository {
     val db by lazy { Application.INSTANCE.database }
     private val dao = db.scheduleDao()
-    val tripHistory : LiveData<MutableList<TripHistory>> = dao.tripHistory()
+    val tripHistory : LiveData<MutableList<TripSchedule>> = dao.tripHistory()
 
     fun insertSchedule(schedule: TripSchedule) {
         dao.insertSchedule(schedule)

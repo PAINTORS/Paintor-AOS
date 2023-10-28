@@ -1,10 +1,11 @@
 package com.jina.paintor.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.navigation.NavigationBarView
 import com.jina.paintor.R
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
 
     private val viewModel: MainViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -87,9 +89,10 @@ class MainActivity : AppCompatActivity(), NavigationBarView.OnItemSelectedListen
         val tripColor = listOf<Int>(getColor(R.color.purple_200), getColor(R.color.black))
         CoroutineScope(Dispatchers.IO).launch {
             areaList.forEachIndexed { index, s ->
-
                 val schedule = TripSchedule(
-                    area = areaList[index],
+                    placeId = "123",
+                    countryName = "대한민국",
+                    cityName = areaList[index],
                     latitude = latitudeList[index],
                     longitude = longitudeList[index],
                     tripStatus = tripStatus[index],

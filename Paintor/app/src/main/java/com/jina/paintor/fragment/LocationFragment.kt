@@ -93,7 +93,7 @@ class LocationFragment(val mContext: Context) : Fragment(), OnMapReadyCallback {
                 sb.append("</Schema>")
                 sb.append("<Folder><name>gadm41_KOR_1</name>")
                 for (tripArea in tripHistorys) {
-                    val locationPolygon = LocationPolygon.findByCityName(tripArea.area)
+                    val locationPolygon = LocationPolygon.findByCityName(tripArea.cityName)
                     sb.append(locationPolygon.returnPolygon(tripArea.tripStatus, tripArea.tripColor))
                 }
                 sb.append("</Folder>")
